@@ -7,24 +7,32 @@
 var React = require('react-native');
 var {
   AppRegistry,
+  BackAndroid,
+  Navigator,
+  ToolbarAndroid,
+  Image,
   StyleSheet,
   Text,
   View,
 } = React;
 
+var MOCKED_MOVIES_DATA = [
+  {title: 'Title', summary: 'summary of contents', image_url: 'http://i.imgur.com/banner/logo-telkomsel-kcl.png'}
+];
+
 var NewsTweet = React.createClass({
   render: function() {
+    var movie = MOCKED_MOVIES_DATA[0];
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Shake or press menu button for dev menu
-        </Text>
+        <Image
+          source={{uri: movie.image_url}}
+          style={styles.thumbnail}
+        />
+        <View style={styles.rightContainer}>
+          <Text style={styles.title}>{movie.title}</Text>
+          <Text style={styles.summary}>{movie.summary}</Text>
+        </View>
       </View>
     );
   }
@@ -33,9 +41,25 @@ var NewsTweet = React.createClass({
 var styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#F5FCFF'
+  },
+  rightContainer: {
+    flex: 1
+  },
+  title: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: 8
+  }, 
+  summary: {
+    textAlign: 'center'
+  },
+  thumbnail:{
+    width: 55,
+    height: 100
   },
   welcome: {
     fontSize: 20,
