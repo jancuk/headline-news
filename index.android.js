@@ -20,21 +20,55 @@ var MOCKED_MOVIES_DATA = [
   {title: 'Title', summary: 'summary of contents', image_url: 'http://i.imgur.com/banner/logo-telkomsel-kcl.png'}
 ];
 
+var REQUEST_URL = 'https://raw.githubusercontent.com/facebook/react-native/master/docs/MoviesExample.json';
+
 var NewsTweet = React.createClass({
+  getInitialState: function() {
+    return {
+      movies: null,
+    }
+  },
+  componentDidMount: function() {
+    this.fetchData();
+  },
+  fetchData: function() {
+    fetch(REQUEST_URL)
+      .then((response) => response.json())
+      .then((responseData) => {
+        this.setState({
+          movies: responseData.movies,
+        });
+      })
+  },
   render: function() {
-    var movie = MOCKED_MOVIES_DATA[0];
+    if (!this.state.movies) {
+      return this.renderLoadingView();
+    }
+    var movie = this.state.movies[0]
+    return this.renderMovie(movie);
+  },
+  renderMovie: function(movie) {
     return (
       <View style={styles.container}>
         <Image
-          source={{uri: movie.image_url}}
+          source={{uri: movie.posters.thumbnail}}
           style={styles.thumbnail}
         />
         <View style={styles.rightContainer}>
           <Text style={styles.title}>{movie.title}</Text>
-          <Text style={styles.summary}>{movie.summary}</Text>
+          <Text style={styles.year}>{movie.year}</Text>
         </View>
       </View>
-    );
+    )
+  },
+  renderLoadingView: function() {
+    return (
+      <View style={styles.container}>
+        <Text>
+          Loading ....
+        </Text>
+      </View>
+    )
   }
 });
 
@@ -53,8 +87,8 @@ var styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     marginBottom: 8
-  }, 
-  summary: {
+  },
+  year: {
     textAlign: 'center'
   },
   thumbnail:{
