@@ -11,21 +11,21 @@ var {
   Navigator,
   ToolbarAndroid,
   Image,
+  ListView,
   StyleSheet,
   Text,
   View,
 } = React;
-
-var MOCKED_MOVIES_DATA = [
-  {title: 'Title', summary: 'summary of contents', image_url: 'http://i.imgur.com/banner/logo-telkomsel-kcl.png'}
-];
 
 var REQUEST_URL = 'https://raw.githubusercontent.com/facebook/react-native/master/docs/MoviesExample.json';
 
 var NewsTweet = React.createClass({
   getInitialState: function() {
     return {
-      movies: null,
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (row1, row2) => row1 != row2,
+      }),
+      loaded: false,
     }
   },
   componentDidMount: function() {
@@ -36,16 +36,23 @@ var NewsTweet = React.createClass({
       .then((response) => response.json())
       .then((responseData) => {
         this.setState({
-          movies: responseData.movies,
+          dataSource: this.state.dataSource.cloneWithRows(responseData.movies),
+          loaded: true
         });
       })
+      .done();
   },
   render: function() {
-    if (!this.state.movies) {
+    if (!this.state.loaded) {
       return this.renderLoadingView();
     }
-    var movie = this.state.movies[0]
-    return this.renderMovie(movie);
+    return (
+      <ListView
+        dataSource={this.state.dataSource}
+        renderRow={this.renderMovie}
+        style={styles.listView}
+      />
+    );
   },
   renderMovie: function(movie) {
     return (
@@ -104,6 +111,11 @@ var styles = StyleSheet.create({
     textAlign: 'center',
     color: '#333333',
     marginBottom: 5,
+  },
+  listView: {
+    paddingTop: 20,
+    paddingBottom: 10,
+    backgroundColor: '#F5FCFF',
   },
 });
 
