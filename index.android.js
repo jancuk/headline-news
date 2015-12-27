@@ -10,113 +10,74 @@ var {
   BackAndroid,
   Navigator,
   ToolbarAndroid,
-  Image,
-  ListView,
   StyleSheet,
-  Text,
   View,
+  Text
 } = React;
 
-var REQUEST_URL = 'https://raw.githubusercontent.com/facebook/react-native/master/docs/MoviesExample.json';
+var FrontScreen = require('./app/FrontScreen');
+var DetailNews  = require('./app/DetailNews');
+
+var _navigator;
+BackAndroid.addEventListener('hardwareBackPress', () => {
+  if (_navigator && _navigator.getCurrentRoutes().length > 1) {
+    _navigator.pop();
+    return true;
+  }
+  return false;
+});
+
+var RouteMapper = function(route, navigateOperations, onComponentRef) {
+  _navigator = navigateOperations;
+  if (route.name === 'home') {
+    return (
+      <FrontScreen navigator={navigateOperations} />
+    )
+  } else if (route.name === 'news') {
+    return (
+      <View style={{flex: 1}}>
+        <ToolbarAndroid
+          actions={[]}
+          navIcon={require('image!android_back_white')}
+          onIconClicked={navigateOperations.pop}
+          style={styles.toolbar}
+          titleColor="blue"
+          title={route.news.title} />
+        <DetailNews
+          style={{flex: 1}}
+          navigator={navigateOperations}
+          news={route.news}
+        />
+      </View>
+    );
+  }
+};
 
 var NewsTweet = React.createClass({
-  getInitialState: function() {
-    return {
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (row1, row2) => row1 != row2,
-      }),
-      loaded: false,
-    }
-  },
-  componentDidMount: function() {
-    this.fetchData();
-  },
-  fetchData: function() {
-    fetch(REQUEST_URL)
-      .then((response) => response.json())
-      .then((responseData) => {
-        this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(responseData.movies),
-          loaded: true
-        });
-      })
-      .done();
-  },
   render: function() {
-    if (!this.state.loaded) {
-      return this.renderLoadingView();
-    }
+    var initialRoute = {name: 'home'};
     return (
-      <ListView
-        dataSource={this.state.dataSource}
-        renderRow={this.renderMovie}
-        style={styles.listView}
+      <Navigator
+        style={styles.container}
+        initialRoute={initialRoute}
+        configureScene={() => Navigator.SceneConfigs.FadeAndroid}
+        renderScene={RouteMapper}
       />
     );
-  },
-  renderMovie: function(movie) {
-    return (
-      <View style={styles.container}>
-        <Image
-          source={{uri: movie.posters.thumbnail}}
-          style={styles.thumbnail}
-        />
-        <View style={styles.rightContainer}>
-          <Text style={styles.title}>{movie.title}</Text>
-          <Text style={styles.year}>{movie.year}</Text>
-        </View>
-      </View>
-    )
-  },
-  renderLoadingView: function() {
-    return (
-      <View style={styles.container}>
-        <Text>
-          Loading ....
-        </Text>
-      </View>
-    )
   }
 });
 
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF'
+    backgroundColor: 'white'
   },
-  rightContainer: {
-    flex: 1
-  },
-  title: {
-    fontSize: 20,
-    textAlign: 'center',
-    marginBottom: 8
-  },
-  year: {
-    textAlign: 'center'
-  },
-  thumbnail:{
-    width: 55,
-    height: 100
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  listView: {
-    paddingTop: 20,
-    paddingBottom: 10,
-    backgroundColor: '#F5FCFF',
+  toolbar: {
+    backgroundColor: '#a9a9a9',
+    height: 56,
   },
 });
 
 AppRegistry.registerComponent('NewsTweet', () => NewsTweet);
+
+module.exports = NewsTweet;
