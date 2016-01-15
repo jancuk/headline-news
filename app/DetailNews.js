@@ -26,7 +26,6 @@ var {
 } = React;
 
 var getImageSource = require('./getImageSource');
-var getTextFromSource = require('./getTextFromSource');
 
 var DetailNews = React.createClass({
   render: function() {
@@ -50,7 +49,6 @@ var DetailNews = React.createClass({
           {this.props.news.description}
         </Text>
         <View style={styles.separator} />
-        <Cast vendors={this.props.news.screen_name} />
       </ScrollView>
     );
   },
@@ -63,29 +61,15 @@ var Retweets = React.createClass({
 
     return (
       <View>
-        <View style={styles.retweet}>
-          <Text style={styles.retweet}>Retweet :  {this.props.news.retweet}</Text>
-        </View>
-        <View style={styles.retweet}>
-          <Text style={styles.retweet}>Favorite : {this.props.news.favorite}</Text>
+        <View>
+          <Text>Retweet :  {this.props.news.retweet}</Text>
+          <Text>Favorite : {this.props.news.favorite}</Text>
         </View>
       </View>
     );
   },
 });
 
-var Cast = React.createClass({
-  render: function() {
-    if(!this.props.vendors) {
-      return null;
-    }
-    return (
-      <View>
-        <Text style={styles.castTitle}>Vendors : {this.props.vendors}</Text>
-      </View>
-    );
-  },
-});
 
 var styles = StyleSheet.create({
   contentContainer: {
@@ -97,12 +81,13 @@ var styles = StyleSheet.create({
   },
   newsTitle: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 14,
   },
   retweet: {
-    marginBottom: 5,
+    fontSize: 13,
+    paddingTop: 10,
   },
-  favorite: {
+  Favorite: {
     fontSize: 20,
   },
   mpaaWrapper: {

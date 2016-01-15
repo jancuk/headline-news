@@ -22,20 +22,15 @@ var {
   Platform,
   StyleSheet,
   Text,
-  TouchableNativeFeedback,
   TouchableHighlight,
   View
 } = React;
 
 var getImageSource     = require('./getImageSource');
-var getTextFromSource  = require('./getTextFromSource');
 
 var NewsCell = React.createClass({
   render: function() {
     var TouchableElement = TouchableHighlight;
-    if (Platform.OS === 'android') {
-      TouchableElement = TouchableNativeFeedback;
-    }
     return (
       <View>
         <TouchableElement

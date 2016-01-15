@@ -1234,9 +1234,11 @@ AppRegistry=
 
 
 
-React.AppRegistry;var BackAndroid=React.BackAndroid;var Navigator=React.Navigator;var ToolbarAndroid=React.ToolbarAndroid;var StyleSheet=React.StyleSheet;var View=React.View;var Text=React.Text;
+
+React.AppRegistry;var BackAndroid=React.BackAndroid;var Navigator=React.Navigator;var ScrollView=React.ScrollView;var ToolbarAndroid=React.ToolbarAndroid;var StyleSheet=React.StyleSheet;var View=React.View;var Text=React.Text;
 
 var FrontScreen=require('NewsTweet/app/FrontScreen.js');
+var DetailNews=require('NewsTweet/app/DetailNews.js');
 
 var _navigator;
 BackAndroid.addEventListener('hardwareBackPress',function(){
@@ -1251,7 +1253,25 @@ var RouteMapper=function(route,navigateOperations,onComponentRef){
 _navigator=navigateOperations;
 if(route.name==='home'){
 return (
-React.createElement(FrontScreen,{navigator:navigateOperations}));}};
+React.createElement(FrontScreen,{navigator:navigateOperations}));}else 
+
+if(route.name==='news'){
+return (
+React.createElement(View,{style:{flex:1}},
+React.createElement(ToolbarAndroid,{
+actions:[],
+navIcon:require('image!android_back_white'),
+onIconClicked:navigateOperations.pop,
+style:styles.toolbar,
+titleColor:'black',
+title:route.news.screen_name}),
+React.createElement(DetailNews,{
+style:{flex:1},
+navigator:navigateOperations,
+news:route.news})));}};
+
+
+
 
 
 
@@ -57006,19 +57026,21 @@ ListView=
 
 
 
-React.ListView;var Platform=React.Platform;var ProgressBarAndroid=React.ProgressBarAndroid;var StyleSheet=React.StyleSheet;var ToolbarAndroid=React.ToolbarAndroid;var Text=React.Text;var TextInput=React.TextInput;var View=React.View;
+
+React.ListView;var Platform=React.Platform;var ProgressBarAndroid=React.ProgressBarAndroid;var StyleSheet=React.StyleSheet;var ToolbarAndroid=React.ToolbarAndroid;var Text=React.Text;var TextInput=React.TextInput;var ScrollView=React.ScrollView;var View=React.View;
 
 var TimerMixin=require('react-timer-mixin/TimerMixin.js');
 var NewsCell=require('NewsTweet/app/NewsCell.js');
 var SearchBar=require('SearchBar');
 
-var API_URL="http://api-newstweet.gedrix.net/v1/news/detiksport";
+var API_URL="http://api-newstweet.gedrix.net/v1/news/kompascom";
 var API_KEYS=[
 'api'];
 
 
 var invariant=require('invariant');
 var dismissKeyboard=require('dismissKeyboard');
+var ScrollableTabView=require('react-native-scrollable-tab-view/index.js');
 
 
 
@@ -57254,7 +57276,7 @@ news:news}));},
 
 
 
-render:function(){var _this5=this;
+render:function(){
 var content=this.state.dataSource.getRowCount()===0?
 React.createElement(NoNews,{
 filter:this.state.filter,
@@ -57274,18 +57296,38 @@ showsVerticalScrollIndicator:false});
 
 return (
 React.createElement(View,{style:styles.container},
+React.createElement(ScrollableTabView,{initialPage:1},
+React.createElement(ScrollView,{tabLabel:'kompascom',style:styles.tabView},
+React.createElement(View,{style:styles.container},
 React.createElement(ToolbarAndroid,{
 actions:[],
 titleColor:'white',
 title:'news-tweet'}),
-React.createElement(SearchBar,{
-onSearchChange:this.onSearchChange,
-isLoading:this.state.isLoading,
-onFocus:function(){return (
-_this5.refs.listview&&_this5.refs.listview.getScrollResponder().scrollTo(0,0));}}),
-
 React.createElement(View,{style:styles.separator}),
-content));}});
+content)),
+
+
+React.createElement(ScrollView,{tabLabel:'detikcom',style:styles.tabView},
+React.createElement(View,{style:styles.container},
+React.createElement(ToolbarAndroid,{
+actions:[],
+titleColor:'white',
+title:'news-tweet'}),
+React.createElement(View,{style:styles.separator}),
+content)),
+
+
+React.createElement(ScrollView,{tabLabel:'beritagar',style:styles.tabView},
+React.createElement(View,{style:styles.container},
+React.createElement(ToolbarAndroid,{
+actions:[],
+titleColor:'white',
+title:'news-tweet'}),
+React.createElement(View,{style:styles.separator}),
+content)))));}});
+
+
+
 
 
 
@@ -57296,14 +57338,18 @@ var NoNews=React.createClass({displayName:'NoNews',
 render:function(){
 var text='';
 if(this.props.filter){
-text='No result for "'+this.props.filter+'"';}else 
-{
-text="No News Found";}
-
-
 return (
 React.createElement(View,{style:[styles.container,styles.centerText]},
-React.createElement(Text,{style:styles.noNewsText},text)));}});
+React.createElement(Text,{style:styles.noNewsText},text)));}else 
+
+
+{
+return (
+React.createElement(View,{style:[styles.container,styles.centerText]},
+React.createElement(View,{style:{alignItems:'center'}},
+React.createElement(ProgressBarAndroid,{styleAttr:'Large'}))));}}});
+
+
 
 
 
@@ -57338,7 +57384,24 @@ opacity:0.0},
 
 toolbar:{
 backgroundColor:'blue',
-height:56}});
+height:56},
+
+tabView:{
+flex:1,
+padding:10,
+backgroundColor:'rgba(0,0,0,0.01)'},
+
+card:{
+borderWidth:1,
+backgroundColor:'#fff',
+borderColor:'rgba(0,0,0,0.1)',
+margin:5,
+height:150,
+padding:15,
+shadowColor:'#ccc',
+shadowOffset:{width:2,height:2},
+shadowOpacity:0.5,
+shadowRadius:3}});
 
 
 
@@ -57462,21 +57525,16 @@ Image=
 
 
 
-
-React.Image;var PixelRatio=React.PixelRatio;var Platform=React.Platform;var StyleSheet=React.StyleSheet;var Text=React.Text;var TouchableHighlight=React.TouchableHighlight;var TouchableNativeFeedback=React.TouchableNativeFeedback;var View=React.View;
+React.Image;var PixelRatio=React.PixelRatio;var Platform=React.Platform;var StyleSheet=React.StyleSheet;var Text=React.Text;var TouchableHighlight=React.TouchableHighlight;var View=React.View;
 
 var getImageSource=require('NewsTweet/app/getImageSource.js');
-var getTextFromSource=require('NewsTweet/app/getTextFromSource.js');
 
 var NewsCell=React.createClass({displayName:'NewsCell',
 render:function(){
 var TouchableElement=TouchableHighlight;
-if(Platform.OS==='android'){
-TouchableElement=TouchableNativeFeedback;}
-
 return (
 React.createElement(View,null,
-React.createElement(TouchableNativeFeedback,{
+React.createElement(TouchableElement,{
 onPress:this.props.onSelect,
 onShowUnderlay:this.props.onHighlight,
 onHideUnderlay:this.props.onUnhighlight},
@@ -57561,34 +57619,10 @@ var uri=news&&news.image?news.image:null;
 if(uri&&kind){
 uri=uri.replace('tmb',kind);}
 
-
 return {uri:uri};}
 
 
 module.exports=getImageSource;
-});
-__d('NewsTweet/app/getTextFromSource.js',function(global, require, module, exports) {  'use strict';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function getTextFromSource(tweet){
-return tweet>0?retweet:0;}
-
-
-module.exports=getTextFromSource;
 });
 __d('SearchBar',function(global, require, module, exports) {  'use strict';
 
@@ -57695,7 +57729,418 @@ marginHorizontal:8}});
 
 module.exports=SearchBar;
 });
-__d('image!android_search_white',function(global, require, module, exports) {  module.exports = {"__packager_asset":true,"path":"/Users/azhar/code/js/react-native/apps/NewsTweet/android/app/src/main/res/mipmap-mdpi/android_search_white.png","uri":"android_search_white","width":36,"height":36,"deprecated":true};
+__d('image!android_search_white',function(global, require, module, exports) {  module.exports = {"__packager_asset":true,"path":"/Users/azhar/code/js/react-native/apps/NewsTweet/android/app/src/main/res/mipmap-xxhdpi/android_search_white.png","uri":"android_search_white","width":36,"height":36,"deprecated":true};
+});
+__d('react-native-scrollable-tab-view/index.js',function(global, require, module, exports) {  'use strict';
+
+var React=require('react-native/Libraries/react-native/react-native.js');var 
+
+Dimensions=
+
+
+
+
+
+
+
+
+React.Dimensions;var View=React.View;var Animated=React.Animated;var ScrollView=React.ScrollView;var Platform=React.Platform;var StyleSheet=React.StyleSheet;var ViewPagerAndroid=React.ViewPagerAndroid;var PropTypes=React.PropTypes;var InteractionManager=React.InteractionManager;
+
+var DefaultTabBar=require('react-native-scrollable-tab-view/DefaultTabBar.js');
+var deviceWidth=Dimensions.get('window').width;
+var deviceHeight=Dimensions.get('window').height;
+
+var ScrollableTabView=React.createClass({displayName:'ScrollableTabView',
+statics:{
+DefaultTabBar:DefaultTabBar},
+
+
+propTypes:{
+tabBarPosition:PropTypes.oneOf(['top','bottom']),
+initialPage:PropTypes.number,
+onChangeTab:PropTypes.func,
+renderTabBar:PropTypes.any,
+style:View.propTypes.style},
+
+
+getDefaultProps:function(){
+return {
+tabBarPosition:'top',
+initialPage:0,
+onChangeTab:function(){}};},
+
+
+
+getInitialState:function(){
+return {
+currentPage:this.props.initialPage,
+scrollValue:new Animated.Value(this.props.initialPage),
+container:{
+width:deviceWidth,
+height:deviceHeight}};},
+
+
+
+
+componentWillReceiveProps:function(props){
+if(props.initialPage!==this.state.currentPage){
+this.goToPage(props.initialPage);}},
+
+
+
+goToPage:function(pageNumber){
+this.props.onChangeTab({i:pageNumber,ref:this.props.children[pageNumber]});
+
+if(Platform.OS==='ios'){
+var offset=pageNumber*this.state.container.width;
+this.scrollView.scrollTo(0,offset);}else 
+{
+this.scrollView.setPage(pageNumber);}
+
+
+this.setState({currentPage:pageNumber});},
+
+
+renderTabBar:function(props){
+if(this.props.renderTabBar===false){
+return null;}else 
+if(this.props.renderTabBar){
+return React.cloneElement(this.props.renderTabBar(),props);}else 
+{
+return React.createElement(DefaultTabBar,props);}},
+
+
+
+renderScrollableContent:function(){var _this=this;
+if(Platform.OS==='ios'){
+return (
+React.createElement(ScrollView,{
+horizontal:true,
+pagingEnabled:true,
+style:styles.scrollableContentIOS,
+contentOffset:{x:this.props.initialPage*this.state.container.width},
+ref:function(scrollView){_this.scrollView=scrollView;},
+onScroll:function(e){
+var offsetX=e.nativeEvent.contentOffset.x;
+_this._updateScrollValue(offsetX/_this.state.container.width);},
+
+onMomentumScrollBegin:function(e){
+var offsetX=e.nativeEvent.contentOffset.x;
+_this._updateSelectedPage(parseInt(offsetX/_this.state.container.width));},
+
+onMomentumScrollEnd:function(e){
+var offsetX=e.nativeEvent.contentOffset.x;
+_this._updateSelectedPage(parseInt(offsetX/_this.state.container.width));},
+
+scrollEventThrottle:16,
+showsHorizontalScrollIndicator:false,
+scrollEnabled:!this.props.locked,
+directionalLockEnabled:true,
+alwaysBounceVertical:false},
+this.props.children.map(function(child,idx){
+return React.createElement(View,{
+key:child.props.tabLabel+'_'+idx,
+style:{width:_this.state.container.width}},
+child);})));}else 
+
+
+
+
+{
+return (
+React.createElement(ViewPagerAndroid,{
+style:styles.scrollableContentAndroid,
+initialPage:this.props.initialPage,
+onPageSelected:this._updateSelectedPage,
+onPageScroll:function(e){var _e$nativeEvent=
+e.nativeEvent;var offset=_e$nativeEvent.offset;var position=_e$nativeEvent.position;
+_this._updateScrollValue(position+offset);},
+
+ref:function(scrollView){_this.scrollView=scrollView;}},
+this.props.children.map(function(child,idx){
+return React.createElement(View,{
+key:child.props.tabLabel+'_'+idx,
+style:{width:_this.state.container.width}},
+child);})));}},
+
+
+
+
+
+
+
+_updateSelectedPage:function(currentPage){var _this2=this;
+if(typeof currentPage==='object'){
+currentPage=currentPage.nativeEvent.position;}
+
+this.setState({currentPage:currentPage},function(){
+_this2.props.onChangeTab({i:currentPage});});},
+
+
+
+_updateScrollValue:function(value){
+this.state.scrollValue.setValue(value);},
+
+
+_handleLayout:function(e){var _this3=this;var _e$nativeEvent$layout=
+e.nativeEvent.layout;var width=_e$nativeEvent$layout.width;var height=_e$nativeEvent$layout.height;
+var container=this.state.container;
+
+if(width!==container.width||height!==container.height){
+this.setState({container:e.nativeEvent.layout});
+InteractionManager.runAfterInteractions(function(){
+_this3.goToPage(_this3.state.currentPage);});}},
+
+
+
+
+render:function(){
+var tabBarProps={
+goToPage:this.goToPage,
+tabs:this.props.children.map(function(child){return child.props.tabLabel;}),
+activeTab:this.state.currentPage,
+scrollValue:this.state.scrollValue,
+underlineColor:this.props.tabBarUnderlineColor,
+backgroundColor:this.props.tabBarBackgroundColor,
+activeTextColor:this.props.tabBarActiveTextColor,
+inactiveTextColor:this.props.tabBarInactiveTextColor,
+containerWidth:this.state.container.width};
+
+
+return (
+React.createElement(View,{style:[styles.container,this.props.style],onLayout:this._handleLayout},
+this.props.tabBarPosition==='top'?this.renderTabBar(tabBarProps):null,
+this.renderScrollableContent(),
+this.props.tabBarPosition==='bottom'?this.renderTabBar(tabBarProps):null));}});
+
+
+
+
+
+module.exports=ScrollableTabView;
+
+var styles=StyleSheet.create({
+container:{
+flex:1},
+
+scrollableContentIOS:{
+flexDirection:'row'},
+
+scrollableContentAndroid:{
+flex:1}});
+});
+__d('react-native-scrollable-tab-view/DefaultTabBar.js',function(global, require, module, exports) {  'use strict';
+
+var React=require('react-native/Libraries/react-native/react-native.js');var 
+
+StyleSheet=
+
+
+
+
+React.StyleSheet;var Text=React.Text;var TouchableOpacity=React.TouchableOpacity;var View=React.View;var Animated=React.Animated;
+
+
+var styles=StyleSheet.create({
+tab:{
+flex:1,
+alignItems:'center',
+justifyContent:'center',
+paddingBottom:10},
+
+
+tabs:{
+height:50,
+flexDirection:'row',
+justifyContent:'space-around',
+borderWidth:1,
+borderTopWidth:0,
+borderLeftWidth:0,
+borderRightWidth:0,
+borderBottomColor:'#ccc'}});
+
+
+
+var DefaultTabBar=React.createClass({displayName:'DefaultTabBar',
+propTypes:{
+goToPage:React.PropTypes.func,
+activeTab:React.PropTypes.number,
+tabs:React.PropTypes.array,
+underlineColor:React.PropTypes.string,
+backgroundColor:React.PropTypes.string,
+activeTextColor:React.PropTypes.string,
+inactiveTextColor:React.PropTypes.string},
+
+
+renderTabOption:function(name,page){var _this=this;
+var isTabActive=this.props.activeTab===page;
+var activeTextColor=this.props.activeTextColor||"navy";
+var inactiveTextColor=this.props.inactiveTextColor||"black";
+return (
+React.createElement(TouchableOpacity,{style:[styles.tab],key:name,onPress:function(){return _this.props.goToPage(page);}},
+React.createElement(View,null,
+React.createElement(Text,{style:{color:isTabActive?activeTextColor:inactiveTextColor,
+fontWeight:isTabActive?'bold':'normal'}},name))));},
+
+
+
+
+
+render:function(){var _this2=this;
+var containerWidth=this.props.containerWidth;
+var numberOfTabs=this.props.tabs.length;
+var tabUnderlineStyle={
+position:'absolute',
+width:containerWidth/numberOfTabs,
+height:4,
+backgroundColor:this.props.underlineColor||"navy",
+bottom:0};
+
+
+var left=this.props.scrollValue.interpolate({
+inputRange:[0,1],outputRange:[0,containerWidth/numberOfTabs]});
+
+
+return (
+React.createElement(View,{style:[styles.tabs,{backgroundColor:this.props.backgroundColor||null}]},
+this.props.tabs.map(function(tab,i){return _this2.renderTabOption(tab,i);}),
+React.createElement(Animated.View,{style:[tabUnderlineStyle,{left:left}]})));}});
+
+
+
+
+
+module.exports=DefaultTabBar;
+});
+__d('NewsTweet/app/DetailNews.js',function(global, require, module, exports) {  'use strict';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var React=require('react-native/Libraries/react-native/react-native.js');var 
+
+Image=
+
+
+
+
+
+React.Image;var PixelRatio=React.PixelRatio;var ScrollView=React.ScrollView;var StyleSheet=React.StyleSheet;var Text=React.Text;var View=React.View;
+
+var getImageSource=require('NewsTweet/app/getImageSource.js');
+
+var DetailNews=React.createClass({displayName:'DetailNews',
+render:function(){
+return (
+React.createElement(ScrollView,{contentContainerStyle:styles.contentContainer},
+React.createElement(View,{style:styles.mainSection},
+
+
+
+React.createElement(Image,{
+source:getImageSource(this.props.news,'det'),
+style:styles.detailImage}),
+
+React.createElement(View,{style:styles.rightPane},
+React.createElement(Text,{style:styles.newsTitle},this.props.news.title),
+React.createElement(Retweets,{news:this.props.news}))),
+
+
+React.createElement(View,{style:styles.separator}),
+React.createElement(Text,null,
+this.props.news.description),
+
+React.createElement(View,{style:styles.separator})));}});
+
+
+
+
+
+var Retweets=React.createClass({displayName:'Retweets',
+render:function(){
+var retweetTotal=this.props.news.retweet;
+var favoriteTotal=this.props.news.favorite;
+
+return (
+React.createElement(View,null,
+React.createElement(View,null,
+React.createElement(Text,null,'Retweet :  ',this.props.news.retweet),
+React.createElement(Text,null,'Favorite : ',this.props.news.favorite))));}});
+
+
+
+
+
+
+
+var styles=StyleSheet.create({
+contentContainer:{
+padding:10},
+
+rightPane:{
+justifyContent:'space-between',
+flex:1},
+
+newsTitle:{
+flex:1,
+fontSize:14},
+
+retweet:{
+fontSize:13,
+paddingTop:10},
+
+Favorite:{
+fontSize:20},
+
+mpaaWrapper:{
+alignSelf:'flex-start',
+borderColor:'black',
+borderWidth:1,
+paddingHorizontal:3,
+marginVertical:5},
+
+mpaaText:{
+fontFamily:'Palatino',
+fontSize:13},
+
+mainSection:{
+flexDirection:'row'},
+
+detailImage:{
+width:134,
+height:200,
+backgroundColor:'#eaeaea',
+marginRight:10},
+
+separator:{
+backgroundColor:'rgba(0, 0, 0, 0.1)',
+height:1/PixelRatio.get(),
+marginVertical:10},
+
+castTitle:{
+fontWeight:'500',
+marginBottom:3},
+
+castActor:{
+marginLeft:2}});
+
+
+
+module.exports=DetailNews;
+});
+__d('image!android_back_white',function(global, require, module, exports) {  module.exports = {"__packager_asset":true,"path":"/Users/azhar/code/js/react-native/apps/NewsTweet/android/app/src/main/res/mipmap-xxhdpi/android_back_white.png","uri":"android_back_white","width":36,"height":36,"deprecated":true};
 });
 ;require("InitializeJavaScriptAppEngine");
 ;require("NewsTweet/index.android.js");

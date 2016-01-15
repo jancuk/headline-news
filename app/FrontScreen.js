@@ -25,6 +25,7 @@ var {
   ToolbarAndroid,
   Text,
   TextInput,
+  ScrollView,
   View,
 } = React;
 
@@ -32,13 +33,14 @@ var TimerMixin = require('react-timer-mixin');
 var NewsCell   = require('./NewsCell');
 var SearchBar  = require('SearchBar');
 
-var API_URL = "http://api-newstweet.gedrix.net/v1/news/detiksport";
+var API_URL = "http://api-newstweet.gedrix.net/v1/news/kompascom";
 var API_KEYS = [
   'api',
 ]
 
 var invariant  = require('invariant');
 var dismissKeyboard = require('dismissKeyboard');
+var ScrollableTabView = require('react-native-scrollable-tab-view');
 
 // Result should be cached keyed by the query
 // with value of null = "being fetched"
@@ -294,19 +296,39 @@ var FrontScreen = React.createClass({
 
       return (
         <View style={styles.container}>
-          <ToolbarAndroid
-            actions={[]}
-            titleColor='white'
-            title='news-tweet' />
-          <SearchBar
-            onSearchChange={this.onSearchChange}
-            isLoading={this.state.isLoading}
-            onFocus={() =>
-              this.refs.listview && this.refs.listview.getScrollResponder().scrollTo(0,0)}
-          />
-          <View style={styles.separator} />
-            {content}
-          </View>
+          <ScrollableTabView initialPage={1}>
+            <ScrollView tabLabel="kompascom" style={styles.tabView}>
+              <View style={styles.container}>
+                <ToolbarAndroid
+                  actions={[]}
+                  titleColor='white'
+                  title='news-tweet' />
+                <View style={styles.separator} />
+                {content}
+              </View>
+            </ScrollView>
+            <ScrollView tabLabel="detikcom" style={styles.tabView}>
+                <View style={styles.container}>
+                <ToolbarAndroid
+                  actions={[]}
+                  titleColor='white'
+                  title='news-tweet' />
+                    <View style={styles.separator} />
+                      {content}
+                </View>
+            </ScrollView>
+            <ScrollView tabLabel="beritagar" style={styles.tabView}>
+              <View style={styles.container}>
+                <ToolbarAndroid
+                  actions={[]}
+                  titleColor='white'
+                  title='news-tweet' />
+                <View style={styles.separator} />
+                {content}
+              </View>
+            </ScrollView>
+          </ScrollableTabView>
+        </View>
       );
   },
 
@@ -316,16 +338,20 @@ var NoNews = React.createClass({
   render: function() {
     var text = '';
     if (this.props.filter) {
-      text = `No result for "${this.props.filter}"`;
+      return (
+        <View style={[styles.container, styles.centerText]}>
+          <Text style={styles.noNewsText}>{text}</Text>
+        </View>
+      );
     } else {
-      text = "No News Found";
+      return (
+        <View style={[styles.container, styles.centerText]}>
+          <View  style={{alignItems: 'center'}}>
+            <ProgressBarAndroid styleAttr="Large"/>
+          </View>
+        </View>
+      );
     }
-
-    return (
-      <View style={[styles.container, styles.centerText]}>
-        <Text style={styles.noNewsText}>{text}</Text>
-      </View>
-    );
   }
 });
 
@@ -359,6 +385,23 @@ var styles = StyleSheet.create({
   toolbar: {
     backgroundColor: 'blue',
     height: 56,
+  },
+  tabView: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: 'rgba(0,0,0,0.01)',
+  },
+  card: {
+    borderWidth: 1,
+    backgroundColor: '#fff',
+    borderColor: 'rgba(0,0,0,0.1)',
+    margin: 5,
+    height: 150,
+    padding: 15,
+    shadowColor: '#ccc',
+    shadowOffset: {width: 2, height: 2},
+    shadowOpacity: 0.5,
+    shadowRadius: 3,
   },
 });
 

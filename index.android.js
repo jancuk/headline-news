@@ -9,6 +9,7 @@ var {
   AppRegistry,
   BackAndroid,
   Navigator,
+  ScrollView,
   ToolbarAndroid,
   StyleSheet,
   View,
@@ -41,8 +42,8 @@ var RouteMapper = function(route, navigateOperations, onComponentRef) {
           navIcon={require('image!android_back_white')}
           onIconClicked={navigateOperations.pop}
           style={styles.toolbar}
-          titleColor="blue"
-          title={route.news.title} />
+          titleColor="black"
+          title={route.news.screen_name} />
         <DetailNews
           style={{flex: 1}}
           navigator={navigateOperations}
@@ -52,6 +53,7 @@ var RouteMapper = function(route, navigateOperations, onComponentRef) {
     );
   }
 };
+
 
 var NewsTweet = React.createClass({
   render: function() {
